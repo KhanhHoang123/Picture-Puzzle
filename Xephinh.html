@@ -1,7 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>(function() {
+<script>
+function reset(){
+setTimeout("location.reload(true);", 5);
+}
+(function() {
   var Blank, Puzzle, Tile,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -17,12 +21,10 @@
       this.checkIfWon = __bind(this.checkIfWon, this);
       this.mixup = __bind(this.mixup, this);
       this.places = [];
+      this.restartgame =  __bind(this.restartgame, this);
       this.initialPlaces = [];
       _ref = this.images;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        image = _ref[_i];
-        $('#previews').append('<img src="' + image + '" class="mini"/>');
-      }
+      
       this.image = this.images[0];
       $('.mini').bind('click', function(event) {
         return _this.changeImage(event.target.src);
@@ -49,7 +51,18 @@
       }
       return _results;
     };
-
+    Puzzle.prototype.restartgame = function() {
+       var panel, _i, _len, _ref;
+      this.image = image;
+      _ref = this.places;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        panel = _ref[_i];
+        if (panel["class"] !== 'Blank') {
+          panel.image = image;
+        }
+      }
+      return this.renderBoard();
+    };
     Puzzle.prototype.checkIfWon = function() {
       var i, _i;
       for (i = _i = 0; _i <= 8; i = ++_i) {
@@ -61,7 +74,7 @@
       }
       return true;
     };
-
+	
     Puzzle.prototype.blankPosition = function() {
       var place, pos, _i, _len, _ref;
       _ref = this.places;
@@ -80,13 +93,19 @@
       $('#canvas').html('');
       if (this.checkIfWon()) {
         $('#canvas').append('<span id="windiv"><img src="' + this.image + '"/><div class="banner"> You Won!</div></span>');
+             
         return $('#windiv').show('slow');
+        
       } else {
         _ref = this.places;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           t = _ref[_i];
           t.show(blank);
         }
+     if (this.checkIfWon()==true)
+     {
+      this.restartgame();
+      }
         return $('.clickable').bind('click', function(event) {
           var toSwitch;
           toSwitch = parseInt(event.target.id);
@@ -133,7 +152,7 @@
       this["class"] = 'Tile';
     }
 
-    Tile.prototype.show = function(blankPosition) {
+    Tile.prototype.show = function(blankPosition) {	
       if (this.isAdjacent(blankPosition)) {
         $('#canvas').append('<div id="' + this.position + '" class="innerSquare imageSquare clickable"></div>');
       } else {
@@ -237,5 +256,7 @@
 		<div id="canvas"><div id="0" onclick="function();" class="innerSquare imageSquare" style="background-position: -220px -110px; background-image: url(&quot;http://placekitten.com/g/300/300&quot;);"></div><div id="1"  onclick="function();" class="innerSquare imageSquare clickable" style="background-position: 0px 0px; background-image: url(&quot;http://placekitten.com/g/300/300&quot;);"></div><div id="2"  onclick="function();" class="innerSquare imageSquare" style="background-position: -220px 0px; background-image: url(&quot;http://placekitten.com/g/300/300&quot;);"></div><div id="3"  onclick="function();" class="innerSquare imageSquare clickable" style="background-position: -110px -110px; background-image: url(&quot;http://placekitten.com/g/300/300&quot;);"></div><div class="innerSquare blank"></div><div id="5"  onclick="function();" class="innerSquare imageSquare clickable" style="background-position: -110px 0px; background-image: url(&quot;http://placekitten.com/g/300/300&quot;);"></div><div id="6" onclick="function();" class="innerSquare imageSquare" style="background-position: 0px -220px; background-image: url(&quot;http://placekitten.com/g/300/300&quot;);"></div><div id="7"  onclick="function();" class="innerSquare imageSquare clickable" style="background-position: -110px -220px; background-image: url(&quot;http://placekitten.com/g/300/300&quot;);"></div><div id="8"  onclick="function();" class="innerSquare imageSquare" style="background-position: 0px -110px; background-image: url(&quot;http://placekitten.com/g/300/300&quot;);"></div></div>
 		<div id="previews"><img src="http://placekitten.com/g/300/300" class="mini"><img src="http://placekitten.com/g/301/301" class="mini"><img src="http://placekitten.com/g/299/299" class="mini"></div>
 	</main>	</main>
+<button id="playagain" onclick="reset()">Play again</button>
+
 </body>
 </html>
